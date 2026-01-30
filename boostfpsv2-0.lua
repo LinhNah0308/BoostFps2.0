@@ -3,7 +3,16 @@ repeat task.wait() until game:IsLoaded()
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 local player = Players.LocalPlayer
+
+pcall(function()
+	StarterGui:SetCore("SendNotification",{
+		Title = "Script Notification",
+		Text = "Boost Fps Successful✅",
+		Duration = 5
+	})
+end)
 
 Lighting.GlobalShadows = false
 Lighting.Brightness = 1
@@ -24,18 +33,14 @@ local function RemoveEffects(obj)
 		or v:IsA("SpotLight")
 		or v:IsA("SurfaceLight") then
 			v.Enabled = false
-		elseif v:IsA("Decal")
-		or v:IsA("Texture") then
+		elseif v:IsA("Decal") or v:IsA("Texture") then
 			v.Transparency = 1
-		elseif v:IsA("Highlight") then
-			v.Enabled = false
 		elseif v:IsA("MeshPart") then
-			v.Material = Enum.Material.SmoothPlastic
-			v.Reflectance = 0
 			if v.Name:lower():find("effect")
 			or v.Name:lower():find("fx")
 			or v.Name:lower():find("skill") then
 				v.Transparency = 1
+				v.Material = Enum.Material.SmoothPlastic
 			end
 		end
 	end
@@ -74,42 +79,17 @@ local function InvisibleChar(char)
 	end
 end
 
-if player.Character then InvisibleChar(player.Character) end
+if player.Character then
+	InvisibleChar(player.Character)
+end
 player.CharacterAdded:Connect(InvisibleChar)
 
-local function InvisibleNPC(model)
-	if model:IsA("Model")
-	and model:FindFirstChildOfClass("Humanoid")
-	and not Players:GetPlayerFromCharacter(model) then
-		for _,v in pairs(model:GetDescendants()) do
-			if v:IsA("BasePart") then
-				v.Transparency = 1
-				v.CanCollide = true
-			elseif v:IsA("Decal") then
-				v.Transparency = 1
-			end
-		end
-	end
-end
-
 RemoveEffects(workspace)
-
-for _,m in pairs(workspace:GetDescendants()) do
-	InvisibleNPC(m)
-end
-
-RunService.RenderStepped:Connect(function()
-	RemoveEffects(workspace)
-	for _,m in pairs(workspace:GetDescendants()) do
-		InvisibleNPC(m)
-	end
-end)
 
 workspace.DescendantAdded:Connect(function(v)
 	task.wait()
 	pcall(function()
 		RemoveEffects(v)
-		InvisibleNPC(v)
 	end)
 end)
 

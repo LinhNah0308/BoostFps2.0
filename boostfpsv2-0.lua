@@ -122,4 +122,23 @@ task.spawn(function()
 	end
 end)
 
+-- ===== AUTO TÀNG HÌNH 80% KHỐI XUNG QUANH PLAYER (1000m / 5s) =====
+task.spawn(function()
+	while true do
+		task.wait(5)
+		local char = player.Character
+		local hrp = char and char:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			local pos = hrp.Position
+			for _,v in pairs(workspace:GetDescendants()) do
+				if v:IsA("BasePart") and (v.Position - pos).Magnitude <= 1000 then
+					v.Transparency = math.max(v.Transparency, 0.8)
+					v.CastShadow = false
+					v.Material = Enum.Material.SmoothPlastic
+				end
+			end
+		end
+	end
+end)
+
 print("Loaded")

@@ -14,12 +14,14 @@ pcall(function()
 	})
 end)
 
+-- ===== LIGHTING / FPS =====
 Lighting.GlobalShadows = false
 Lighting.Brightness = 1
 Lighting.FogEnd = 9e9
 Lighting.Ambient = Color3.fromRGB(120,120,120)
 Lighting.OutdoorAmbient = Color3.fromRGB(120,120,120)
 
+-- ===== REMOVE EFFECT =====
 local function RemoveEffects(obj)
 	for _,v in pairs(obj:GetDescendants()) do
 		if v:IsA("ParticleEmitter")
@@ -35,17 +37,11 @@ local function RemoveEffects(obj)
 			v.Enabled = false
 		elseif v:IsA("Decal") or v:IsA("Texture") then
 			v.Transparency = 1
-		elseif v:IsA("MeshPart") then
-			if v.Name:lower():find("effect")
-			or v.Name:lower():find("fx")
-			or v.Name:lower():find("skill") then
-				v.Transparency = 1
-				v.Material = Enum.Material.SmoothPlastic
-			end
 		end
 	end
 end
 
+-- ===== MAP LOW =====
 for _,v in pairs(workspace:GetDescendants()) do
 	if v:IsA("BasePart") then
 		v.Material = Enum.Material.SmoothPlastic
@@ -68,6 +64,7 @@ for _,v in pairs(game:GetDescendants()) do
 	end
 end
 
+-- ===== INVISIBLE PLAYER =====
 local function InvisibleChar(char)
 	for _,v in pairs(char:GetDescendants()) do
 		if v:IsA("BasePart") then
@@ -85,12 +82,31 @@ end
 player.CharacterAdded:Connect(InvisibleChar)
 
 RemoveEffects(workspace)
-
 workspace.DescendantAdded:Connect(function(v)
 	task.wait()
 	pcall(function()
 		RemoveEffects(v)
 	end)
+end)
+
+-- ===== AUTO TÀNG HÌNH QUÁI / MOB (1s) =====
+task.spawn(function()
+	while true do
+		task.wait(1)
+		for _,m in pairs(workspace:GetDescendants()) do
+			if m:IsA("Model") and m:FindFirstChild("Humanoid") and m ~= player.Character then
+				for _,p in pairs(m:GetDescendants()) do
+					if p:IsA("BasePart") then
+						p.Transparency = 1
+						p.CastShadow = false
+						p.CanCollide = true
+					elseif p:IsA("Decal") or p:IsA("Texture") then
+						p.Transparency = 1
+					end
+				end
+			end
+		end
+	end
 end)
 
 print("Loaded")

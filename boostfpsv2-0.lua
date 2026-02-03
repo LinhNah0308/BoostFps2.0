@@ -2,7 +2,6 @@ repeat task.wait() until game:IsLoaded()
 
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
-local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local player = Players.LocalPlayer
 
@@ -64,23 +63,37 @@ for _,v in pairs(game:GetDescendants()) do
 	end
 end
 
--- ===== INVISIBLE PLAYER =====
-local function InvisibleChar(char)
+-- ===== AUTO TÀNG HÌNH PLAYER (LUÔN + SAU KHI CHẾT) =====
+local function InvisiblePlayer(char)
+	task.wait(0.3)
 	for _,v in pairs(char:GetDescendants()) do
 		if v:IsA("BasePart") then
 			v.Transparency = 1
 			v.CanCollide = true
+			v.CastShadow = false
 		elseif v:IsA("Decal") then
 			v.Transparency = 1
 		end
 	end
 end
 
-if player.Character then
-	InvisibleChar(player.Character)
+local function OnCharacterAdded(char)
+	InvisiblePlayer(char)
+	local hum = char:WaitForChild("Humanoid", 5)
+	if hum then
+		hum.Died:Connect(function()
+			local newChar = player.CharacterAdded:Wait()
+			InvisiblePlayer(newChar)
+		end)
+	end
 end
-player.CharacterAdded:Connect(InvisibleChar)
 
+if player.Character then
+	OnCharacterAdded(player.Character)
+end
+player.CharacterAdded:Connect(OnCharacterAdded)
+
+-- ===== AUTO REMOVE EFFECT SPAWN =====
 RemoveEffects(workspace)
 workspace.DescendantAdded:Connect(function(v)
 	task.wait()

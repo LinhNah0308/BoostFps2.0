@@ -16,7 +16,7 @@ end)
 
 -- ===== LIGHTING / FPS =====
 Lighting.GlobalShadows = false
-Lighting.Brightness = 1
+Lighting.Brightness = 0.5
 Lighting.FogEnd = 9e9
 Lighting.Ambient = Color3.fromRGB(120,120,120)
 Lighting.OutdoorAmbient = Color3.fromRGB(120,120,120)
@@ -91,41 +91,10 @@ if player.Character then
 end
 player.CharacterAdded:Connect(OnCharacterAdded)
 
--- ===== AUTO REMOVE EFFECT SPAWN (0.1s LOOP) =====
-task.spawn(function()
-	while true do
-		task.wait(0.1)
-		pcall(function()
-			for _,v in ipairs(workspace:GetDescendants()) do
-				if IsEffectName(v.Name)
-				or v:IsA("ParticleEmitter")
-				or v:IsA("Trail")
-				or v:IsA("Beam")
-				or v:IsA("Smoke")
-				or v:IsA("Fire")
-				or v:IsA("Sparkles")
-				or v:IsA("Explosion")
-				or v:IsA("BillboardGui")
-				or v:IsA("SurfaceGui") then
-					Debris:AddItem(v, 0)
-
-				elseif v:IsA("Decal") or v:IsA("Texture") then
-					v.Transparency = 1
-
-				elseif v:IsA("PointLight")
-				or v:IsA("SpotLight")
-				or v:IsA("SurfaceLight") then
-					v.Enabled = false
-				end
-			end
-		end)
-	end
-end)
-
 -- ===== AUTO TÀNG HÌNH QUÁI / MOB =====
 task.spawn(function()
 	while true do
-		task.wait(0.1)
+		task.wait(1)
 		for _,m in pairs(workspace:GetDescendants()) do
 			if m:IsA("Model") and m:FindFirstChild("Humanoid") and m ~= player.Character then
 				for _,p in pairs(m:GetDescendants()) do

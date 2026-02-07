@@ -3,6 +3,7 @@ repeat task.wait() until game:IsLoaded()
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
 local StarterGui = game:GetService("StarterGui")
+local Debris = game:GetService("Debris")
 local player = Players.LocalPlayer
 
 pcall(function()
@@ -20,24 +21,21 @@ Lighting.FogEnd = 9e9
 Lighting.Ambient = Color3.fromRGB(120,120,120)
 Lighting.OutdoorAmbient = Color3.fromRGB(120,120,120)
 
--- ===== REMOVE EFFECT =====
-local function RemoveEffects(obj)
-	for _,v in pairs(obj:GetDescendants()) do
-		if v:IsA("ParticleEmitter")
-		or v:IsA("Trail")
-		or v:IsA("Beam")
-		or v:IsA("Smoke")
-		or v:IsA("Fire")
-		or v:IsA("Sparkles") then
-			v.Enabled = false
-		elseif v:IsA("PointLight")
-		or v:IsA("SpotLight")
-		or v:IsA("SurfaceLight") then
-			v.Enabled = false
-		elseif v:IsA("Decal") or v:IsA("Texture") then
-			v.Transparency = 1
+-- ===== EFFECT NAME CHECK =====
+local EffectNames = {
+	"damage","dmg","hit","hits","effect","fx","vfx",
+	"smoke","slash","cut","explosion","boom",
+	"shock","shockwave","burn","fire","spark"
+}
+
+local function IsEffectName(name)
+	name = string.lower(name)
+	for _,v in pairs(EffectNames) do
+		if string.find(name, v) then
+			return true
 		end
 	end
+	return false
 end
 
 -- ===== MAP LOW =====
@@ -109,7 +107,7 @@ task.spawn(function()
 				or v:IsA("Explosion")
 				or v:IsA("BillboardGui")
 				or v:IsA("SurfaceGui") then
-					game:GetService("Debris"):AddItem(v, 0)
+					Debris:AddItem(v, 0)
 
 				elseif v:IsA("Decal") or v:IsA("Texture") then
 					v.Transparency = 1
@@ -124,7 +122,7 @@ task.spawn(function()
 	end
 end)
 
--- ===== AUTO TÀNG HÌNH QUÁI / MOB (1s) =====
+-- ===== AUTO TÀNG HÌNH QUÁI / MOB =====
 task.spawn(function()
 	while true do
 		task.wait(0.1)
@@ -144,7 +142,7 @@ task.spawn(function()
 	end
 end)
 
--- ===== AUTO TÀNG HÌNH 99,99% KHỐI XUNG QUANH PLAYER (1000m / 5s) =====
+-- ===== AUTO TÀNG HÌNH 99,99% KHỐI XUNG QUANH PLAYER =====
 task.spawn(function()
 	while true do
 		task.wait(5)

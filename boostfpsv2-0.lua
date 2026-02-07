@@ -93,19 +93,41 @@ if player.Character then
 end
 player.CharacterAdded:Connect(OnCharacterAdded)
 
--- ===== AUTO REMOVE EFFECT SPAWN =====
-RemoveEffects(workspace)
-workspace.DescendantAdded:Connect(function(v)
-	task.wait()
-	pcall(function()
-		RemoveEffects(v)
-	end)
+-- ===== AUTO REMOVE EFFECT SPAWN (0.1s LOOP) =====
+task.spawn(function()
+	while true do
+		task.wait(0.1)
+		pcall(function()
+			for _,v in ipairs(workspace:GetDescendants()) do
+				if IsEffectName(v.Name)
+				or v:IsA("ParticleEmitter")
+				or v:IsA("Trail")
+				or v:IsA("Beam")
+				or v:IsA("Smoke")
+				or v:IsA("Fire")
+				or v:IsA("Sparkles")
+				or v:IsA("Explosion")
+				or v:IsA("BillboardGui")
+				or v:IsA("SurfaceGui") then
+					game:GetService("Debris"):AddItem(v, 0)
+
+				elseif v:IsA("Decal") or v:IsA("Texture") then
+					v.Transparency = 1
+
+				elseif v:IsA("PointLight")
+				or v:IsA("SpotLight")
+				or v:IsA("SurfaceLight") then
+					v.Enabled = false
+				end
+			end
+		end)
+	end
 end)
 
 -- ===== AUTO TÀNG HÌNH QUÁI / MOB (1s) =====
 task.spawn(function()
 	while true do
-		task.wait(1)
+		task.wait(0.1)
 		for _,m in pairs(workspace:GetDescendants()) do
 			if m:IsA("Model") and m:FindFirstChild("Humanoid") and m ~= player.Character then
 				for _,p in pairs(m:GetDescendants()) do
@@ -122,7 +144,7 @@ task.spawn(function()
 	end
 end)
 
--- ===== AUTO TÀNG HÌNH 80% KHỐI XUNG QUANH PLAYER (1000m / 5s) =====
+-- ===== AUTO TÀNG HÌNH 99,99% KHỐI XUNG QUANH PLAYER (1000m / 5s) =====
 task.spawn(function()
 	while true do
 		task.wait(5)
@@ -132,7 +154,7 @@ task.spawn(function()
 			local pos = hrp.Position
 			for _,v in pairs(workspace:GetDescendants()) do
 				if v:IsA("BasePart") and (v.Position - pos).Magnitude <= 1000 then
-					v.Transparency = math.max(v.Transparency, 0.99)
+					v.Transparency = math.max(v.Transparency, 0.9999)
 					v.CastShadow = false
 					v.Material = Enum.Material.SmoothPlastic
 				end

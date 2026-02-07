@@ -132,7 +132,7 @@ task.spawn(function()
 			local pos = hrp.Position
 			for _,v in pairs(workspace:GetDescendants()) do
 				if v:IsA("BasePart") and (v.Position - pos).Magnitude <= 1000 then
-					v.Transparency = math.max(v.Transparency, 0.8)
+					v.Transparency = math.max(v.Transparency, 0.99)
 					v.CastShadow = false
 					v.Material = Enum.Material.SmoothPlastic
 				end
